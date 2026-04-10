@@ -1,0 +1,23 @@
+// Эмуляция запроса на получение клиента
+function emulateLoadClientInfo(phone) {
+  const user = users[phone];
+  if (user) {
+    return {
+      success: true,
+      rows: [{ points: user.bonus }]
+    };
+  }
+  return { success: false, error: "Клиент не найден" };
+}
+
+// Эмуляция начисления/списания
+function emulateCreateClientAndAddPoints(phone, value, comment) {
+  if (!users[phone]) {
+    // Создаём нового клиента
+    users[phone] = { name: "Новый гость", bonus: 0, spent: 0, nickname: "Гость", avatar: "☕", visits: 0 };
+  }
+  users[phone].bonus += value;
+  users[phone].spent += Math.abs(value) * 20; // грубая эмуляция
+  saveStorage();
+  return { success: true };
+}
