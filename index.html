@@ -2,162 +2,330 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Tijgerbol - Бонусная программа</title>
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; margin: 0; }
-    .coffee { font-size: 64px; }
-    h1 { color: #6D4C41; margin: 10px 0; }
-    .sub { color: #666; margin-bottom: 30px; }
-    button { background: #6D4C41; color: white; border: none; padding: 12px 20px; border-radius: 30px; margin: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
-    button:active { transform: scale(0.97); }
-    input { padding: 12px; border-radius: 30px; border: 1px solid #ccc; width: 220px; font-size: 16px; text-align: center; }
-    .card { background: white; padding: 20px; border-radius: 24px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .bonus { font-size: 44px; font-weight: bold; color: #6D4C41; margin: 10px 0; }
-    .spent { color: #888; font-size: 14px; }
-    hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
-    .history-item { border-bottom: 1px solid #eee; padding: 10px 0; text-align: left; font-size: 14px; }
-    .green { color: #2e7d32; font-weight: 500; }
-    .red { color: #c62828; font-weight: 500; }
-    .section-title { font-size: 16px; font-weight: bold; margin: 15px 0 5px; color: #333; }
-    .btn-outline { background: #efebe9; color: #6D4C41; }
-    .btn-danger { background: #d32f2f; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f0eb; margin: 0; padding: 0; }
+    
+    /* Вкладки */
+    .tabs { display: flex; background: #6D4C41; border-radius: 0; overflow: hidden; }
+    .tab { flex: 1; text-align: center; padding: 16px; color: rgba(255,255,255,0.7); font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .tab.active { color: white; background: #8B5E4C; border-bottom: 3px solid #FFD700; }
+    
+    /* Карточки */
+    .container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    .card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .balance-card { background: linear-gradient(135deg, #6D4C41, #4E2E24); color: white; text-align: center; }
+    .balance-amount { font-size: 56px; font-weight: bold; margin: 10px 0; }
+    .balance-label { font-size: 14px; opacity: 0.8; }
+    .avatar-large { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 12px; }
+    
+    button { background: #6D4C41; color: white; border: none; padding: 12px 20px; border-radius: 40px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 8px; }
+    button:active { transform: scale(0.98); }
+    .btn-secondary { background: #EFEBE9; color: #4E2E24; }
+    .btn-danger { background: #D32F2F; }
+    .btn-success { background: #2E7D32; }
+    
+    .row { display: flex; gap: 12px; margin-top: 8px; }
+    .row button { flex: 1; margin-top: 0; }
+    
+    input { width: 100%; padding: 14px; border: 1px solid #E0D6CF; border-radius: 40px; font-size: 16px; background: white; margin-bottom: 12px; text-align: center; }
+    input:focus { outline: none; border-color: #6D4C41; }
+    
+    .avatar-selector { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+    .avatar-option { width: 50px; height: 50px; background: #EFEBE9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; transition: 0.2s; }
+    .avatar-option.selected { background: #6D4C41; transform: scale(1.05); }
+    
+    .history-item { border-bottom: 1px solid #EFEBE9; padding: 12px 0; display: flex; align-items: center; gap: 12px; }
+    .history-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .history-icon.add { background: #E8F5E9; color: #2E7D32; }
+    .history-icon.remove { background: #FFEBEE; color: #D32F2F; }
+    .history-text { flex: 1; font-size: 14px; }
+    .history-date { font-size: 11px; color: #999; }
+    
+    .info-text { font-size: 12px; color: #999; text-align: center; margin-top: 8px; }
+    .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #EFEBE9; }
+    
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div class="coffee">☕</div>
-  <h1>Tijgerbol</h1>
-  <p class="sub">Бонусная программа кофейни</p>
-  
-  <div class="card">
-    <input type="tel" id="phone" placeholder="+7 912 345 67 89">
-    <br><br>
-    <button onclick="login()">🔑 Войти / Зарегистрироваться</button>
-  </div>
-  
-  <div id="app"></div>
 
-  <script>
-    let currentUser = null;
-    let currentBonus = 0;
-    let currentSpent = 0;
-    let history = [];
-    let currentPhone = '';
-    
-    const users = {
-      '+79123456789': { name: 'Алексей', bonus: 450, avatar: '☕', spent: 9000 },
-      '+79991234567': { name: 'Мария', bonus: 280, avatar: '🎀', spent: 5600 }
-    };
-    
-    function login() {
-      let phone = document.getElementById('phone').value.trim();
-      if (!phone) { alert('Введите номер телефона'); return; }
-      currentPhone = phone;
-      
-      if (users[phone]) {
-        currentUser = users[phone];
-        currentBonus = currentUser.bonus;
-        currentSpent = currentUser.spent;
-        history = [];
-        showApp();
-      } else if (phone.startsWith('+7') && phone.length === 12) {
-        currentUser = { name: 'Новый гость', bonus: 50, avatar: '🆕', spent: 0 };
-        currentBonus = 50;
-        currentSpent = 0;
-        history = [];
-        showApp();
-      } else {
-        alert('Неверный формат. Используйте +7XXXXXXXXXX');
-      }
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">🛒 Покупка</div>
+  <div class="tab" onclick="switchTab(1)">👤 Профиль</div>
+  <div class="tab" onclick="switchTab(2)">📜 История</div>
+</div>
+
+<div id="tab-content" class="container"></div>
+
+<script>
+  // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЕЙ ==========
+  let users = {
+    '+79123456789': { name: 'Алексей', bonus: 450, spent: 9000, nickname: 'Кофеман', avatar: '☕', visits: 45 },
+    '+79991234567': { name: 'Мария', bonus: 280, spent: 5600, nickname: 'LatteLover', avatar: '🎀', visits: 28 }
+  };
+  
+  let currentUser = null;
+  let currentPhone = '';
+  let currentBonus = 0;
+  let currentSpent = 0;
+  let currentNickname = '';
+  let currentAvatar = '☕';
+  let transactions = [];
+  let currentTab = 0;
+  
+  // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+  function formatDate() {
+    let d = new Date();
+    return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} ${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
+  }
+  
+  function getLevel() {
+    if (currentSpent >= 10000) return '👑 Платиновый';
+    if (currentSpent >= 5000) return '🥇 Золотой';
+    if (currentSpent >= 2000) return '🥈 Серебряный';
+    return '🥉 Бронзовый';
+  }
+  
+  function getLevelColor() {
+    if (currentSpent >= 10000) return '#B0BEC5';
+    if (currentSpent >= 5000) return '#FFD700';
+    if (currentSpent >= 2000) return '#C0C0C0';
+    return '#CD7F32';
+  }
+  
+  function saveUser() {
+    if (!users[currentPhone]) {
+      users[currentPhone] = { name: currentUser.name, bonus: currentBonus, spent: currentSpent, nickname: currentNickname, avatar: currentAvatar, visits: 1 };
+    } else {
+      users[currentPhone].bonus = currentBonus;
+      users[currentPhone].spent = currentSpent;
+      users[currentPhone].nickname = currentNickname;
+      users[currentPhone].avatar = currentAvatar;
     }
-    
-    function showApp() {
-      document.getElementById('app').innerHTML = `
-        <div class="card" style="margin-top: 20px;">
-          <div style="font-size: 56px;">${currentUser.avatar}</div>
-          <h2 style="margin: 5px 0;">${currentUser.name}</h2>
-          <p style="color: #888; font-size: 12px;">${currentPhone}</p>
-          <div class="bonus">${currentBonus} <span style="font-size: 16px;">бонусов</span></div>
-          <div class="spent">💰 Всего потрачено: ${currentSpent}₽</div>
-          
-          <hr>
-          
-          <div class="section-title">☕ Новая покупка (5% бонусами)</div>
-          <button onclick="addPurchase(200)">200₽ → +10 бонусов</button>
-          <button onclick="addPurchase(500)">500₽ → +25 бонусов</button>
-          <button onclick="addPurchase(1000)">1000₽ → +50 бонусов</button>
-          
-          <hr>
-          
-          <div class="section-title">🎁 Списание бонусов</div>
-          <button onclick="redeemBonus(50)" class="btn-outline">Списать 50</button>
-          <button onclick="redeemBonus(100)" class="btn-outline">Списать 100</button>
-          
-          <hr>
-          
-          <button onclick="logout()" class="btn-danger">🚪 Выйти</button>
-        </div>
-        <div id="history" style="margin-top: 20px;"></div>
-      `;
-      renderHistory();
-    }
-    
-    function addPurchase(amount) {
-      let bonusEarned = Math.floor(amount * 0.05);
-      currentBonus += bonusEarned;
-      currentSpent += amount;
-      history.unshift({ text: `☕ Покупка на ${amount}₽ → +${bonusEarned} бонусов`, type: 'add' });
-      updateUI();
+  }
+  
+  function addTransaction(text, amount, type) {
+    transactions.unshift({ text, amount, type, date: formatDate() });
+    if (transactions.length > 50) transactions.pop();
+  }
+  
+  // ========== ОСНОВНЫЕ ДЕЙСТВИЯ ==========
+  function addPurchase(amount) {
+    let bonusEarned = Math.floor(amount * 0.05);
+    currentBonus += bonusEarned;
+    currentSpent += amount;
+    addTransaction(`☕ Покупка на ${amount}₽ → +${bonusEarned} бонусов`, bonusEarned, 'add');
+    saveUser();
+    renderCurrentTab();
+  }
+  
+  function redeemBonus(amount) {
+    if (currentBonus >= amount) {
+      currentBonus -= amount;
+      addTransaction(`🎁 Списано ${amount} бонусов`, -amount, 'remove');
       saveUser();
+      renderCurrentTab();
+    } else {
+      alert(`❌ Недостаточно бонусов! У вас ${currentBonus}, нужно ${amount}`);
+    }
+  }
+  
+  function updateProfile(nickname, avatar) {
+    currentNickname = nickname;
+    currentAvatar = avatar;
+    saveUser();
+    renderCurrentTab();
+  }
+  
+  // ========== ВХОД ==========
+  function login() {
+    let phone = document.getElementById('phone-input').value.trim();
+    if (!phone) { alert('Введите номер телефона'); return; }
+    
+    if (!phone.startsWith('+7') || phone.length !== 12) {
+      alert('Используйте формат +7XXXXXXXXXX');
+      return;
     }
     
-    function redeemBonus(amount) {
-      if (currentBonus >= amount) {
-        currentBonus -= amount;
-        history.unshift({ text: `🎁 Списано ${amount} бонусов`, type: 'remove' });
-        updateUI();
-        saveUser();
-      } else {
-        alert(`❌ Недостаточно бонусов! У вас ${currentBonus}, нужно ${amount}`);
-      }
+    currentPhone = phone;
+    
+    if (users[phone]) {
+      let u = users[phone];
+      currentUser = { name: u.name };
+      currentBonus = u.bonus;
+      currentSpent = u.spent;
+      currentNickname = u.nickname || u.name;
+      currentAvatar = u.avatar || '☕';
+      transactions = [];
+    } else {
+      currentUser = { name: 'Новый гость' };
+      currentBonus = 50;
+      currentSpent = 0;
+      currentNickname = 'Гость';
+      currentAvatar = '🆕';
+      transactions = [];
+      users[phone] = { name: 'Новый гость', bonus: 50, spent: 0, nickname: 'Гость', avatar: '🆕', visits: 1 };
     }
     
-    function updateUI() {
-      document.querySelector('.bonus').innerHTML = `${currentBonus} <span style="font-size: 16px;">бонусов</span>`;
-      document.querySelector('.spent').innerHTML = `💰 Всего потрачено: ${currentSpent}₽`;
-      renderHistory();
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app-screen').classList.remove('hidden');
+    renderCurrentTab();
+  }
+  
+  function logout() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app-screen').classList.add('hidden');
+    currentUser = null;
+    currentPhone = '';
+  }
+  
+  // ========== ОТРИСОВКА ВКЛАДОК ==========
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach((el, i) => {
+      if (i === tab) el.classList.add('active');
+      else el.classList.remove('active');
+    });
+    renderCurrentTab();
+  }
+  
+  function renderCurrentTab() {
+    if (currentTab === 0) renderPurchaseTab();
+    else if (currentTab === 1) renderProfileTab();
+    else renderHistoryTab();
+  }
+  
+  function renderPurchaseTab() {
+    let html = `
+      <div class="card balance-card">
+        <div class="balance-label">Мои бонусы</div>
+        <div class="balance-amount">${currentBonus}</div>
+        <div class="balance-label">Всего потрачено: ${currentSpent}₽</div>
+      </div>
+      
+      <div class="card">
+        <h3 style="margin-bottom: 12px;">☕ Симуляция покупки</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 16px;">Начисляется 5% бонусами от суммы чека</p>
+        <div class="row">
+          <button class="btn-success" onclick="addPurchase(200)">200₽</button>
+          <button class="btn-success" onclick="addPurchase(500)">500₽</button>
+        </div>
+        <div class="row">
+          <button class="btn-success" onclick="addPurchase(1000)">1000₽</button>
+          <button class="btn-success" onclick="addPurchase(1500)">1500₽</button>
+        </div>
+        <div class="row">
+          <input type="number" id="custom-amount" placeholder="Своя сумма" style="margin:0;">
+          <button class="btn-success" onclick="addPurchase(parseInt(document.getElementById('custom-amount').value) || 0)">Начислить</button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3 style="margin-bottom: 12px;">🎁 Списание бонусов</h3>
+        <div class="row">
+          <button class="btn-secondary" onclick="redeemBonus(50)">Списать 50</button>
+          <button class="btn-secondary" onclick="redeemBonus(100)">Списать 100</button>
+        </div>
+      </div>
+      
+      <div class="info-text">☕ 5% бонусов начисляется на кофе и фирменные напитки</div>
+    `;
+    document.getElementById('tab-content').innerHTML = html;
+  }
+  
+  function renderProfileTab() {
+    let avatars = ['☕', '👤', '🌟', '⭐', '🔥', '💪', '🎯', '🏆', '👑', '🦁', '🐯', '🐼', '🍕', '🎸', '⚡', '💎'];
+    let avatarsHtml = avatars.map(a => 
+      `<div class="avatar-option ${currentAvatar === a ? 'selected' : ''}" onclick="selectAvatar('${a}')">${a}</div>`
+    ).join('');
+    
+    let html = `
+      <div class="card" style="text-align: center;">
+        <div class="avatar-large">${currentAvatar}</div>
+        <h2>${currentNickname}</h2>
+        <p style="color: #888; font-size: 13px;">${currentPhone}</p>
+        <div style="display: inline-block; background: ${getLevelColor()}20; padding: 4px 12px; border-radius: 20px; margin-top: 8px;">
+          <span style="color: ${getLevelColor()};">${getLevel()}</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>✏️ Редактировать профиль</h3>
+        <input type="text" id="nickname-input" placeholder="Никнейм" value="${currentNickname}">
+        <div class="avatar-selector">${avatarsHtml}</div>
+        <button onclick="saveProfile()">Сохранить изменения</button>
+      </div>
+      
+      <div class="card">
+        <h3>📊 Статистика</h3>
+        <div class="stat-row"><span>🏆 Всего бонусов</span><strong>${currentBonus}</strong></div>
+        <div class="stat-row"><span>💰 Всего потрачено</span><strong>${currentSpent}₽</strong></div>
+        <div class="stat-row"><span>⭐ Уровень</span><strong>${getLevel()}</strong></div>
+      </div>
+    `;
+    document.getElementById('tab-content').innerHTML = html;
+  }
+  
+  function renderHistoryTab() {
+    if (transactions.length === 0) {
+      document.getElementById('tab-content').innerHTML = `<div class="card" style="text-align: center;">📭 Нет операций</div>`;
+      return;
     }
     
-    function renderHistory() {
-      let historyHtml = '<div class="card"><div class="section-title">📜 История операций</div>';
-      if (history.length === 0) {
-        historyHtml += '<p style="color:#888;">Нет операций</p>';
-      } else {
-        history.forEach(item => {
-          let cls = item.type === 'add' ? 'green' : 'red';
-          historyHtml += `<div class="history-item"><span class="${cls}">${item.text}</span></div>`;
-        });
-      }
-      historyHtml += '</div>';
-      document.getElementById('history').innerHTML = historyHtml;
-    }
-    
-    function saveUser() {
-      if (!users[currentPhone]) {
-        users[currentPhone] = { name: currentUser.name, bonus: currentBonus, avatar: currentUser.avatar, spent: currentSpent };
-      } else {
-        users[currentPhone].bonus = currentBonus;
-        users[currentPhone].spent = currentSpent;
-      }
-    }
-    
-    function logout() {
-      currentUser = null;
-      document.getElementById('app').innerHTML = '';
-      document.getElementById('phone').value = '';
-      location.reload();
-    }
-  </script>
+    let historyHtml = '<div class="card">';
+    transactions.forEach(t => {
+      let iconClass = t.type === 'add' ? 'add' : 'remove';
+      let iconSymbol = t.type === 'add' ? '+' : '−';
+      historyHtml += `
+        <div class="history-item">
+          <div class="history-icon ${iconClass}">${iconSymbol}</div>
+          <div class="history-text">
+            <div>${t.text}</div>
+            <div class="history-date">${t.date}</div>
+          </div>
+        </div>
+      `;
+    });
+    historyHtml += '</div>';
+    document.getElementById('tab-content').innerHTML = historyHtml;
+  }
+  
+  function selectAvatar(avatar) {
+    currentAvatar = avatar;
+    renderProfileTab();
+  }
+  
+  function saveProfile() {
+    let newNickname = document.getElementById('nickname-input').value.trim();
+    if (newNickname) currentNickname = newNickname;
+    saveUser();
+    renderProfileTab();
+  }
+  
+  // ========== ИНИЦИАЛИЗАЦИЯ ==========
+  function init() {
+    let loginHtml = `
+      <div class="card" style="text-align: center; margin-top: 40px;">
+        <div style="font-size: 64px;">☕</div>
+        <h1>Tijgerbol</h1>
+        <p style="color: #666; margin-bottom: 24px;">Бонусная программа кофейни</p>
+        <input type="tel" id="phone-input" placeholder="+7 912 345 67 89">
+        <button onclick="login()">Войти / Зарегистрироваться</button>
+        <p style="font-size: 12px; color: #999; margin-top: 20px;">Тестовые: +79123456789 (450 бонусов)<br>+79991234567 (280 бонусов)</p>
+      </div>
+    `;
+    document.getElementById('login-screen').innerHTML = loginHtml;
+    document.getElementById('app-screen').innerHTML = '<div id="tab-content" class="container"></div>';
+  }
+  
+  init();
+</script>
+
+<div id="login-screen"></div>
+<div id="app-screen" class="hidden"></div>
+
 </body>
 </html>
