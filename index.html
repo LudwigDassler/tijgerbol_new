@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Tijgerbol - Бонусная программа</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -13,20 +14,18 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: url('Giraffe%20illustration.jpeg') center/cover fixed;
       min-height: 100vh;
-      color: #1a1a1a;
+      color: #1A1A1A;
     }
 
-    /* Затемнение фона */
     .overlay {
       background: rgba(0, 0, 0, 0.55);
       min-height: 100vh;
       padding: 20px 0 40px;
     }
 
-    /* Контейнер */
     .container {
       max-width: 500px;
       margin: 0 auto;
@@ -36,11 +35,11 @@
     /* Вкладки */
     .tabs {
       display: flex;
-      background: #2C2C2C;
+      background: #1A1A1A;
       margin: 0 16px 20px;
       border-radius: 60px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     .tab {
       flex: 1;
@@ -48,30 +47,37 @@
       padding: 14px 0;
       font-weight: 500;
       font-size: 14px;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.55);
       cursor: pointer;
       transition: 0.2s;
-      background: #2C2C2C;
+      background: #1A1A1A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
+    .tab i { font-size: 16px; }
     .tab.active {
-      background: #C8A07E;
-      color: #1a1a1a;
+      background: #B8860B;
+      color: #FFFFFF;
     }
 
     /* Карточки */
     .card {
-      background: white;
-      border-radius: 28px;
+      background: #FFFFFF;
+      border-radius: 24px;
       padding: 24px;
       margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
     }
 
-    /* Баланс карточка */
+    /* Баланс */
     .balance-card {
-      background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
-      color: white;
+      background: linear-gradient(135deg, #1A1A1A, #2D2D2D);
+      color: #FFFFFF;
       text-align: center;
+      border: none;
     }
     .balance-amount {
       font-size: 64px;
@@ -80,66 +86,134 @@
       margin: 8px 0;
     }
     .balance-label {
-      font-size: 14px;
-      opacity: 0.7;
-      letter-spacing: 0.5px;
-    }
-    .balance-sub {
       font-size: 13px;
       opacity: 0.6;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .balance-sub {
+      font-size: 12px;
+      opacity: 0.5;
       margin-top: 8px;
     }
 
-    /* Аватар */
+    /* Аватар и фото */
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
     .avatar-large {
       width: 88px;
       height: 88px;
-      background: #F5F0EB;
+      background: #F5F5F5;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
-      margin: 0 auto 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 44px;
+      margin: 0 auto 12px;
+      overflow: hidden;
+      border: 2px solid #B8860B;
+    }
+    .avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-photo-btn {
+      background: none;
+      border: 1px solid #B8860B;
+      color: #B8860B;
+      font-size: 12px;
+      padding: 6px 12px;
+      width: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     /* Кнопки */
     button {
-      background: #C8A07E;
-      color: #1a1a1a;
+      background: #B8860B;
+      color: #FFFFFF;
       border: none;
       padding: 14px 20px;
       border-radius: 60px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s ease;
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    button:active { transform: scale(0.97); background: #B8916E; }
-    .btn-secondary { background: #EFEBE9; color: #2C2C2C; }
-    .btn-secondary:active { background: #E0D6CF; }
-    .btn-danger { background: #D32F2F; color: white; }
-    .btn-outline { background: transparent; border: 1.5px solid #C8A07E; color: #C8A07E; }
-    .btn-outline:active { background: rgba(200,160,126,0.1); }
+    button:active { transform: scale(0.97); background: #9A7209; }
+    .btn-secondary { background: #F0F0F0; color: #1A1A1A; }
+    .btn-secondary:active { background: #E0E0E0; }
+    .btn-outline { background: transparent; border: 1.5px solid #B8860B; color: #B8860B; }
+    .btn-outline:active { background: rgba(184,134,11,0.05); }
 
     .row { display: flex; gap: 12px; margin-top: 12px; }
     .row button { flex: 1; }
 
-    input {
-      width: 100%;
+    /* Селектор страны */
+    .phone-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .country-select {
+      width: 100px;
+      padding: 14px 10px;
+      border: 1.5px solid #E8E8E8;
+      border-radius: 60px;
+      font-size: 14px;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .country-select:focus { outline: none; border-color: #B8860B; }
+    .phone-number {
+      flex: 1;
       padding: 14px 18px;
-      border: 1.5px solid #E8E0D8;
+      border: 1.5px solid #E8E8E8;
       border-radius: 60px;
       font-size: 16px;
       font-family: inherit;
       background: white;
-      margin-bottom: 12px;
+    }
+    .phone-number:focus { outline: none; border-color: #B8860B; }
+
+    input, select {
       transition: 0.2s;
     }
-    input:focus { outline: none; border-color: #C8A07E; }
+
+    /* История */
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    .history-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .history-icon.add { background: #E8F5E9; color: #2E7D32; }
+    .history-icon.remove { background: #FFEBEE; color: #D32F2F; }
+    .history-icon.none { background: #FFF3E0; color: #B8860B; }
+    .history-text { flex: 1; font-size: 14px; font-weight: 500; color: #1A1A1A; }
+    .history-date { font-size: 11px; color: #999; margin-top: 4px; }
 
     /* Выбор аватара */
     .avatar-selector {
@@ -150,68 +224,29 @@
       margin: 16px 0;
     }
     .avatar-option {
-      width: 52px;
-      height: 52px;
-      background: #F5F0EB;
+      width: 48px;
+      height: 48px;
+      background: #F5F5F5;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 24px;
       cursor: pointer;
       transition: 0.2s;
+      border: 2px solid transparent;
     }
     .avatar-option.selected {
-      background: #C8A07E;
+      border-color: #B8860B;
+      background: #FFF8F0;
       transform: scale(1.05);
     }
 
-    /* История */
-    .history-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 0;
-      border-bottom: 1px solid #EFEBE9;
-    }
-    .history-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-    .history-icon.add { background: #E8F5E9; color: #2E7D32; }
-    .history-icon.remove { background: #FFEBEE; color: #D32F2F; }
-    .history-icon.none { background: #FFF3E0; color: #FF9800; }
-    .history-icon.qr { background: #E3F2FD; color: #1976D2; }
-    .history-text { flex: 1; font-size: 14px; font-weight: 500; }
-    .history-date { font-size: 11px; color: #999; margin-top: 4px; }
-
-    /* QR код */
-    .qr-container {
-      text-align: center;
-      padding: 16px;
-      background: white;
-      border-radius: 20px;
-      display: inline-block;
-      width: 100%;
-    }
-    .qr-code {
-      width: 180px;
-      height: 180px;
-      margin: 0 auto;
-      background: white;
-      padding: 12px;
-      border-radius: 20px;
-    }
     .stat-row {
       display: flex;
       justify-content: space-between;
       padding: 12px 0;
-      border-bottom: 1px solid #EFEBE9;
+      border-bottom: 1px solid #F0F0F0;
     }
 
     .hidden { display: none; }
@@ -219,32 +254,47 @@
     .mt-4 { margin-top: 16px; }
     .mb-2 { margin-bottom: 8px; }
     .text-muted { color: #888; font-size: 13px; }
-    
-    /* Акции */
     .promo-badge {
-      background: linear-gradient(135deg, #C8A07E, #B8916E);
+      background: #B8860B;
       color: white;
       border-radius: 40px;
       padding: 4px 12px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       display: inline-block;
+    }
+    .qr-container {
+      text-align: center;
+      padding: 16px;
+      background: #FAFAFA;
+      border-radius: 20px;
+    }
+    .qr-code {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-radius: 16px;
     }
   </style>
 </head>
 <body>
 <div class="overlay">
   <div class="tabs" id="tabs" style="display: none;">
-    <div class="tab active" onclick="switchTab(0)">Кофе</div>
-    <div class="tab" onclick="switchTab(1)">Профиль</div>
-    <div class="tab" onclick="switchTab(2)">История</div>
+    <div class="tab active" onclick="switchTab(0)"><i class="fas fa-coffee"></i> Кофе</div>
+    <div class="tab" onclick="switchTab(1)"><i class="fas fa-user"></i> Профиль</div>
+    <div class="tab" onclick="switchTab(2)"><i class="fas fa-clock"></i> История</div>
   </div>
   <div id="login-screen" class="container"></div>
   <div id="app-screen" class="hidden"></div>
 </div>
 
 <script>
-  // ========== ХРАНИЛИЩЕ ДАННЫХ ==========
+  // ========== ХРАНИЛИЩЕ ==========
   let users = {};
   let currentUser = null;
   let currentPhone = '';
@@ -252,53 +302,61 @@
   let currentSpent = 0;
   let currentNickname = '';
   let currentAvatar = '☕';
+  let currentPhoto = null;
   let transactions = [];
   let currentTab = 0;
-  
-  // Загрузка сохранённых данных
+
+  const countryCodes = {
+    '🇷🇺 Россия': '+7',
+    '🇺🇦 Украина': '+380',
+    '🇧🇾 Беларусь': '+375',
+    '🇰🇿 Казахстан': '+7',
+    '🇪🇺 Европа': '+3'
+  };
+
   function loadStorage() {
     const saved = localStorage.getItem('tijgerbol_users');
     if (saved) users = JSON.parse(saved);
     if (!users['+79123456789']) {
-      users['+79123456789'] = { name: 'Алексей', bonus: 450, spent: 9000, nickname: 'Кофеман', avatar: '☕', visits: 45 };
-      users['+79991234567'] = { name: 'Мария', bonus: 280, spent: 5600, nickname: 'LatteLover', avatar: '🎀', visits: 28 };
+      users['+79123456789'] = { name: 'Алексей', bonus: 450, spent: 9000, nickname: 'Алексей', avatar: '☕', photo: null, visits: 45 };
+      users['+79991234567'] = { name: 'Мария', bonus: 280, spent: 5600, nickname: 'Мария', avatar: '🎀', photo: null, visits: 28 };
     }
   }
-  
+
   function saveStorage() {
     localStorage.setItem('tijgerbol_users', JSON.stringify(users));
   }
-  
-  // ========== НОРМАЛИЗАЦИЯ НОМЕРА ==========
-  function normalizePhone(phone) {
-    let digits = phone.replace(/\D/g, '');
-    if (digits.length === 11 && digits.startsWith('8')) return '+7' + digits.substring(1);
-    if (digits.length === 11 && digits.startsWith('7')) return '+' + digits;
-    if (digits.length === 10 && !digits.startsWith('7')) return '+7' + digits;
-    if (digits.length === 12 && digits.startsWith('380')) return '+' + digits;
-    if (digits.length >= 10 && digits.length <= 15) return '+' + digits;
-    return phone;
+
+  function normalizePhone(raw, countryCode) {
+    let digits = raw.replace(/\D/g, '');
+    if (countryCode === '+7' && digits.length === 10) return '+7' + digits;
+    if (countryCode === '+7' && digits.length === 11 && digits.startsWith('7')) return '+' + digits;
+    if (countryCode === '+7' && digits.length === 11 && digits.startsWith('8')) return '+7' + digits.substring(1);
+    if (countryCode === '+380' && digits.length === 9) return '+380' + digits;
+    if (countryCode === '+375' && digits.length === 9) return '+375' + digits;
+    if (digits.length >= 10) return countryCode + digits;
+    return raw;
   }
-  
+
   function formatDate() {
     let d = new Date();
     return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} ${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
   }
-  
+
   function getLevel() {
     if (currentSpent >= 10000) return 'Платиновый';
     if (currentSpent >= 5000) return 'Золотой';
     if (currentSpent >= 2000) return 'Серебряный';
     return 'Бронзовый';
   }
-  
+
   function getLevelColor() {
     if (currentSpent >= 10000) return '#B0BEC5';
     if (currentSpent >= 5000) return '#FFD700';
     if (currentSpent >= 2000) return '#C0C0C0';
     return '#CD7F32';
   }
-  
+
   function saveUser() {
     users[currentPhone] = {
       name: currentUser?.name || 'Гость',
@@ -306,32 +364,32 @@
       spent: currentSpent,
       nickname: currentNickname,
       avatar: currentAvatar,
+      photo: currentPhoto,
       visits: (users[currentPhone]?.visits || 0) + 1
     };
     saveStorage();
   }
-  
+
   function addTransaction(text, amount, type) {
     transactions.unshift({ text, amount, type, date: formatDate() });
     if (transactions.length > 50) transactions.pop();
   }
-  
+
   function addPurchase(amount, category) {
     if (amount <= 0) return;
     let isDrink = (category === 'coffee' || category === 'bakery');
     let bonusEarned = isDrink ? Math.floor(amount * 0.05) : 0;
     let categoryName = category === 'coffee' ? 'Кофе' : category === 'bakery' ? 'Фирменный напиток' : 'Другое';
     let icon = category === 'coffee' ? '☕' : category === 'bakery' ? '🥐' : '🍽️';
-    let bonusText = bonusEarned > 0 ? `+${bonusEarned} бонусов` : '0 бонусов (не напиток)';
     
     currentBonus += bonusEarned;
     currentSpent += amount;
-    addTransaction(`${icon} ${categoryName}: ${amount}₽ → ${bonusText}`, bonusEarned, bonusEarned > 0 ? 'add' : 'none');
+    addTransaction(`${icon} ${categoryName}: ${amount}₽ → +${bonusEarned} бонусов`, bonusEarned, bonusEarned > 0 ? 'add' : 'none');
     saveUser();
     renderCurrentTab();
     alert(bonusEarned > 0 ? `+${bonusEarned} бонусов (5% от ${amount}₽)` : `⚠️ Бонусы только на кофе и фирменные напитки`);
   }
-  
+
   function redeemBonus(amount) {
     if (currentBonus >= amount) {
       currentBonus -= amount;
@@ -342,11 +400,14 @@
       alert(`Недостаточно бонусов! У вас ${currentBonus}, нужно ${amount}`);
     }
   }
-  
+
   function login() {
-    let rawPhone = document.getElementById('phone-input').value.trim();
-    if (!rawPhone) { alert('Введите номер телефона'); return; }
-    let phone = normalizePhone(rawPhone);
+    let countrySelect = document.getElementById('country-select');
+    let countryCode = countrySelect.options[countrySelect.selectedIndex]?.value || '+7';
+    let rawNumber = document.getElementById('phone-number').value.trim();
+    if (!rawNumber) { alert('Введите номер телефона'); return; }
+    
+    let phone = normalizePhone(rawNumber, countryCode);
     if (!phone.startsWith('+')) { alert('Неверный формат номера'); return; }
     
     currentPhone = phone;
@@ -357,6 +418,7 @@
       currentSpent = u.spent;
       currentNickname = u.nickname || u.name;
       currentAvatar = u.avatar || '☕';
+      currentPhoto = u.photo || null;
       transactions = [];
     } else {
       currentUser = { name: 'Новый гость' };
@@ -364,8 +426,9 @@
       currentSpent = 0;
       currentNickname = 'Гость';
       currentAvatar = '☕';
+      currentPhoto = null;
       transactions = [];
-      users[phone] = { name: 'Новый гость', bonus: 50, spent: 0, nickname: 'Гость', avatar: '☕', visits: 1 };
+      users[phone] = { name: 'Новый гость', bonus: 50, spent: 0, nickname: 'Гость', avatar: '☕', photo: null, visits: 1 };
       saveStorage();
     }
     
@@ -374,14 +437,14 @@
     document.getElementById('tabs').style.display = 'flex';
     renderCurrentTab();
   }
-  
+
   function logout() {
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app-screen').classList.add('hidden');
     document.getElementById('tabs').style.display = 'none';
     renderLoginScreen();
   }
-  
+
   function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.tab').forEach((el, i) => {
@@ -390,13 +453,13 @@
     });
     renderCurrentTab();
   }
-  
+
   function renderCurrentTab() {
     if (currentTab === 0) renderPurchaseTab();
     else if (currentTab === 1) renderProfileTab();
     else renderHistoryTab();
   }
-  
+
   function renderPurchaseTab() {
     let html = `
       <div class="card balance-card">
@@ -408,102 +471,122 @@
       
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <h3 style="font-size:18px;">Симуляция покупки</h3>
+          <h3 style="font-size:18px; font-weight:600;">Симуляция покупки</h3>
           <span class="promo-badge">5% бонусов</span>
         </div>
         <p class="text-muted mb-2">Бонусы начисляются только на кофе и фирменные напитки</p>
         <div class="row">
-          <button class="btn-outline" onclick="showAmountPicker('coffee')">☕ Кофе</button>
-          <button class="btn-outline" onclick="showAmountPicker('bakery')">🥐 Фирменный</button>
-          <button class="btn-outline" onclick="showAmountPicker('other')">🍽️ Другое</button>
+          <button class="btn-outline" onclick="showAmountPicker('coffee')"><i class="fas fa-coffee"></i> Кофе</button>
+          <button class="btn-outline" onclick="showAmountPicker('bakery')"><i class="fas fa-croissant"></i> Фирменный</button>
+          <button class="btn-outline" onclick="showAmountPicker('other')"><i class="fas fa-utensils"></i> Другое</button>
         </div>
       </div>
       
       <div class="card">
-        <h3 style="margin-bottom:16px;">Списание бонусов</h3>
+        <h3 style="margin-bottom:16px; font-size:18px; font-weight:600;">Списание бонусов</h3>
         <div class="row">
-          <button class="btn-secondary" onclick="redeemBonus(50)">Списать 50</button>
-          <button class="btn-secondary" onclick="redeemBonus(100)">Списать 100</button>
+          <button class="btn-secondary" onclick="redeemBonus(50)"><i class="fas fa-minus-circle"></i> Списать 50</button>
+          <button class="btn-secondary" onclick="redeemBonus(100)"><i class="fas fa-minus-circle"></i> Списать 100</button>
         </div>
       </div>
     `;
     document.getElementById('app-screen').innerHTML = `<div class="container">${html}</div>`;
   }
-  
+
   function showAmountPicker(category) {
-    let categoryName = category === 'coffee' ? '☕ Кофе' : category === 'bakery' ? '🥐 Фирменный напиток' : '🍽️ Другое';
+    let categoryName = category === 'coffee' ? 'Кофе' : category === 'bakery' ? 'Фирменный напиток' : 'Другое';
+    let icon = category === 'coffee' ? '☕' : category === 'bakery' ? '🥐' : '🍽️';
     let amounts = [200, 500, 1000, 1500];
     let buttons = amounts.map(a => `<button class="btn-outline" onclick="addPurchase(${a}, '${category}')">${a}₽</button>`).join('');
     let html = `
       <div class="card" style="text-align:center;">
-        <h3>${categoryName}</h3>
+        <h3>${icon} ${categoryName}</h3>
         <p class="text-muted mb-2">Выберите сумму чека</p>
         <div class="row" style="flex-wrap:wrap; justify-content:center;">${buttons}</div>
         <div class="row" style="margin-top:16px;">
-          <input type="number" id="custom-amount-${category}" placeholder="Своя сумма">
+          <input type="number" id="custom-amount-${category}" placeholder="Своя сумма" class="phone-number">
           <button class="btn-outline" onclick="addPurchase(parseInt(document.getElementById('custom-amount-${category}').value)||0,'${category}')">Начислить</button>
         </div>
-        <button class="btn-secondary mt-4" onclick="renderCurrentTab()">Назад</button>
+        <button class="btn-secondary mt-4" onclick="renderCurrentTab()"><i class="fas fa-arrow-left"></i> Назад</button>
       </div>
     `;
     document.getElementById('app-screen').innerHTML = `<div class="container">${html}</div>`;
   }
-  
+
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        currentPhoto = e.target.result;
+        saveUser();
+        renderProfileTab();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   function renderProfileTab() {
     let avatars = ['☕', '👤', '🌟', '⭐', '🔥', '💪', '🎯', '🏆', '👑', '🦁', '🐯', '🐼', '🍕', '🎸', '⚡', '💎'];
     let avatarsHtml = avatars.map(a => `<div class="avatar-option ${currentAvatar === a ? 'selected' : ''}" onclick="selectAvatar('${a}')">${a}</div>`).join('');
     
-    // Генерация QR-кода (симуляция)
-    let qrData = encodeURIComponent(currentPhone);
+    let avatarHtml = currentPhoto 
+      ? `<img src="${currentPhoto}" alt="Фото">` 
+      : `<span style="font-size:44px;">${currentAvatar}</span>`;
     
     let html = `
       <div class="container">
-        <div class="card" style="text-align:center;">
-          <div class="avatar-large">${currentAvatar}</div>
-          <h2>${currentNickname}</h2>
-          <p class="text-muted">${currentPhone}</p>
-          <div style="display:inline-block; background:${getLevelColor()}20; padding:6px 16px; border-radius:40px; margin-top:8px;">
-            <span style="color:${getLevelColor()};">${getLevel()}</span>
+        <div class="card">
+          <div class="avatar-section">
+            <div class="avatar-large">${avatarHtml}</div>
+            <input type="file" id="photo-upload" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+            <button class="upload-photo-btn" onclick="document.getElementById('photo-upload').click()"><i class="fas fa-camera"></i> Загрузить фото</button>
+          </div>
+          <div class="text-center">
+            <h2>${currentNickname}</h2>
+            <p class="text-muted">${currentPhone}</p>
+            <div style="display:inline-block; background:${getLevelColor()}20; padding:6px 16px; border-radius:40px; margin-top:8px;">
+              <span style="color:${getLevelColor()};">${getLevel()}</span>
+            </div>
           </div>
         </div>
         
-        <div class="card" style="text-align:center;">
+        <div class="card text-center">
           <h3 style="margin-bottom:12px;">Ваш QR-код</h3>
           <p class="text-muted mb-2">Покажите кассиру для начисления бонусов</p>
           <div class="qr-container">
-            <div class="qr-code" style="background:#fff; display:flex; align-items:center; justify-content:center; flex-direction:column;">
-              <div style="font-size:64px;">📱</div>
+            <div class="qr-code">
+              <i class="fas fa-qrcode" style="font-size:64px; color:#B8860B;"></i>
               <div style="font-size:12px; margin-top:8px;">${currentPhone}</div>
               <div style="font-size:10px; color:#999;">ID: ${currentPhone.slice(-6)}</div>
             </div>
           </div>
-          <p class="text-muted mt-4" style="font-size:11px;">* Временно QR-код симулируется текстом</p>
         </div>
         
         <div class="card">
-          <h3>Редактировать профиль</h3>
-          <input type="text" id="nickname-input" placeholder="Никнейм" value="${currentNickname}">
+          <h3 style="margin-bottom:16px;">Редактировать профиль</h3>
+          <input type="text" id="nickname-input" placeholder="Никнейм" value="${currentNickname}" class="phone-number" style="margin-bottom:12px;">
           <div class="avatar-selector">${avatarsHtml}</div>
-          <button onclick="saveProfile()">Сохранить</button>
+          <button onclick="saveProfile()"><i class="fas fa-save"></i> Сохранить</button>
         </div>
         
         <div class="card">
-          <h3>Статистика</h3>
-          <div class="stat-row"><span>Всего бонусов</span><strong>${currentBonus}</strong></div>
-          <div class="stat-row"><span>Всего потрачено</span><strong>${currentSpent}₽</strong></div>
-          <div class="stat-row"><span>Уровень</span><strong>${getLevel()}</strong></div>
-          <div class="stat-row"><span>Визитов</span><strong>${users[currentPhone]?.visits || 1}</strong></div>
+          <h3 style="margin-bottom:16px;">Статистика</h3>
+          <div class="stat-row"><span><i class="fas fa-gem"></i> Всего бонусов</span><strong>${currentBonus}</strong></div>
+          <div class="stat-row"><span><i class="fas fa-shopping-bag"></i> Всего потрачено</span><strong>${currentSpent}₽</strong></div>
+          <div class="stat-row"><span><i class="fas fa-chart-line"></i> Уровень</span><strong>${getLevel()}</strong></div>
+          <div class="stat-row"><span><i class="fas fa-calendar-check"></i> Визитов</span><strong>${users[currentPhone]?.visits || 1}</strong></div>
         </div>
         
-        <div class="card" style="text-align:center;">
-          <h3>Мы в соцсетях</h3>
-          <a href="https://vk.com/tijgerbol" target="_blank" style="color:#C8A07E; text-decoration:none;">📱 ВКонтакте</a>
+        <div class="card text-center">
+          <h3 style="margin-bottom:12px;">Мы в соцсетях</h3>
+          <a href="https://vk.com/tijgerbol" target="_blank" style="color:#B8860B; text-decoration:none;"><i class="fab fa-vk"></i> ВКонтакте</a>
         </div>
       </div>
     `;
     document.getElementById('app-screen').innerHTML = html;
   }
-  
+
   function renderHistoryTab() {
     if (transactions.length === 0) {
       document.getElementById('app-screen').innerHTML = `<div class="container"><div class="card text-center">Нет операций</div></div>`;
@@ -526,7 +609,7 @@
     historyHtml += '</div></div>';
     document.getElementById('app-screen').innerHTML = historyHtml;
   }
-  
+
   function selectAvatar(avatar) { currentAvatar = avatar; renderProfileTab(); }
   
   function saveProfile() {
@@ -535,17 +618,22 @@
     saveUser();
     renderProfileTab();
   }
-  
+
   function renderLoginScreen() {
+    let countryOptions = Object.entries(countryCodes).map(([name, code]) => `<option value="${code}">${name} (${code})</option>`).join('');
     let loginHtml = `
-      <div class="card" style="text-align:center; margin-top:40px; background:white;">
+      <div class="card" style="text-align:center; margin-top:40px;">
         <div style="font-size:56px; margin-bottom:8px;">☕</div>
         <h1 style="font-size:32px; letter-spacing:-1px;">Tijgerbol</h1>
         <p class="text-muted" style="margin-bottom:24px;">Бонусная программа кофейни</p>
-        <input type="tel" id="phone-input" placeholder="+7 912 345 67 89">
-        <button onclick="login()">Войти / Зарегистрироваться</button>
+        <div class="phone-input-group">
+          <select id="country-select" class="country-select">
+            ${countryOptions}
+          </select>
+          <input type="tel" id="phone-number" class="phone-number" placeholder="912 345 67 89">
+        </div>
+        <button onclick="login()" style="margin-top:16px;"><i class="fas fa-arrow-right"></i> Войти / Зарегистрироваться</button>
         <p class="text-muted" style="margin-top:20px; font-size:12px;">
-          📞 Поддерживаются: +7, 8, 79123456789, +380, +375<br>
           🧪 Тестовые: +79123456789 (450 бонусов)<br>
           ☕ Бонусы только на кофе и фирменные напитки
         </p>
@@ -553,7 +641,7 @@
     `;
     document.getElementById('login-screen').innerHTML = loginHtml;
   }
-  
+
   loadStorage();
   renderLoginScreen();
 </script>
