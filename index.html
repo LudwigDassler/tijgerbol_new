@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tijgerbol</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f5f5f5; margin: 0; }
+    .coffee { font-size: 64px; }
+    h1 { color: #6D4C41; }
+    button { background: #6D4C41; color: white; border: none; padding: 12px 24px; border-radius: 8px; margin: 10px; cursor: pointer; font-size: 16px; }
+    input { padding: 12px; margin: 10px; border-radius: 8px; border: 1px solid #ccc; width: 200px; font-size: 16px; }
+    .card { background: white; padding: 20px; border-radius: 16px; max-width: 350px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .bonus { font-size: 36px; font-weight: bold; color: #6D4C41; }
+    button:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+  <div class="coffee">☕</div>
+  <h1>Tijgerbol</h1>
+  <p style="color: #666;">Бонусная программа кофейни</p>
+  
+  <div class="card">
+    <input type="tel" id="phone" placeholder="+7 912 345 67 89">
+    <br>
+    <button onclick="login()">Войти / Зарегистрироваться</button>
+  </div>
+  
+  <div id="app" style="margin-top: 20px;"></div>
+
+  <script>
+    let currentUser = null;
+    let currentBonus = 0;
+    
+    const users = {
+      '+79123456789': { name: 'Алексей', bonus: 450, avatar: '☕', spent: 9000 },
+      '+79991234567': { name: 'Мария', bonus: 280, avatar: '🎀', spent: 5600 }
+    };
+    
+    function login() {
+      let phone = document.getElementById('phone').value.trim();
+      
+      if (users[phone]) {
+        currentUser = users[phone];
+        currentBonus = currentUser.bonus;
+        showApp();
+      } else if (phone.startsWith('+7') && phone.length === 12) {
+        currentUser = { name: 'Новый гость', bonus: 50, avatar: '🆕', spent: 0 };
+        currentBonus = 50;
+        showApp();
+      } else {
+        alert('Неверный формат. Используйте +7XXXXXXXXXX');
+      }
+    }
+    
+    function showApp() {
+      document.getElementById('app').innerHTML = `
+        <div class="card">
+          <div style="font-size: 48px;">${currentUser.avatar}</div>
+          <h2>${currentUser.name}</h2>
+          <p>Номер: ${document.getElementById('phone').value}</p>
+          <div class="bonus">${currentBonus} бонусов</div>
+          <p>Потрачено: ${currentUser.spent}₽</p>
+          <hr>
+          <button onclick="addBonus(500)">+500₽ (5% = 25 бонусов)</button>
+          <button onclick="addBonus(1000)">+1000₽ (5% = 50 бонусов)</button>
+          <br>
+          <button onclick="redeemBonus(50)">Списать 50</button>
+          <button onclick="redeemBonus(100)">Списать 100</button>
+          <br>
+          <button onclick="logout()" style="background: #999;">Выйти</button>
+        </div>
+        <div id="history" style="margin-top: 20px; max-width: 350px; margin: 20px auto;"></div>
+      `;
+      showHistory();
+    }
+    
+    let history = [];
+    
+    function addBonus(amount) {
+      let bonusEarned = Math.floor(amount * 0.05);
+      currentBonus += bonusEarned;
+      currentUser.spent += amount;
+      history.unshift(`☕ Покупка на ${amount}₽ → +${bonusEarned} бонусов`);
+      updateUI();
+    }
+    
+    function redeemBonus(amount) {
+      if (currentBonus >= amount) {
+        currentBonus -= amount;
+        history.unshift(`🎁 Списано ${amount} бонусов`);
+        updateUI();
+      } else {
+        alert('Недостаточно бонусов!');
+      }
+    }
+    
+    function updateUI() {
+      document.querySelector('.bonus').innerHTML = `${currentBonus} бонусов`;
+      document.querySelector('p:nth-of-type(2)').innerHTML = `Потрачено: ${currentUser.spent}₽`;
+      showHistory();
+    }
+    
+    function showHistory() {
+      let historyHtml = '<div class="card"><h3>📜 История операций</h3>';
+      if (history.length === 0) {
+        historyHtml += '<p>Нет операций</p>';
+      } else {
+        history.forEach(item => {
+          historyHtml += `<p style="border-bottom: 1px solid #eee; padding: 8px 0;">${item}</p>`;
+        });
+      }
+      historyHtml += '</div>';
+      document.getElementById('history').innerHTML = historyHtml;
+    }
+    
+    function logout() {
+      currentUser = null;
+      history = [];
+      document.getElementById('app').innerHTML = '';
+      document.getElementById('phone').value = '';
+    }
+  </script>
+</body>
+</html>
