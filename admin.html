@@ -1,23 +1,318 @@
-// Эмуляция запроса на получение клиента
-function emulateLoadClientInfo(phone) {
-  const user = users[phone];
-  if (user) {
-    return {
-      success: true,
-      rows: [{ points: user.bonus }]
-    };
-  }
-  return { success: false, error: "Клиент не найден" };
-}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Tijgerbol - Панель кассира</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #1a1a1a; min-height: 100vh; color: #1A1A1A; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .header { text-align: center; margin-bottom: 20px; color: white; }
+    .header h1 { font-size: 28px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .search-section { display: flex; gap: 12px; margin-bottom: 20px; }
+    .search-section input { flex: 1; padding: 14px 18px; border: 1.5px solid #E8E8E8; border-radius: 60px; font-size: 16px; font-family: inherit; }
+    .search-section input:focus { outline: none; border-color: #B8860B; }
+    button { background: #B8860B; color: white; border: none; padding: 14px 20px; border-radius: 60px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+    button:active { transform: scale(0.97); background: #9A7209; }
+    .btn-secondary { background: #F0F0F0; color: #1A1A1A; }
+    .btn-danger { background: #D32F2F; }
+    .btn-success { background: #2E7D32; }
+    .row { display: flex; gap: 12px; margin-top: 16px; }
+    .row button { flex: 1; }
+    .client-info { background: #F8F8F8; border-radius: 20px; padding: 16px; margin: 16px 0; }
+    .client-name { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+    .client-balance { font-size: 36px; font-weight: 700; color: #B8860B; margin: 8px 0; }
+    .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #E8E8E8; }
+    .history-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F0F0F0; }
+    .history-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .history-icon.add { background: #E8F5E9; color: #2E7D32; }
+    .history-icon.remove { background: #FFEBEE; color: #D32F2F; }
+    .history-text { flex: 1; font-size: 14px; }
+    .history-date { font-size: 11px; color: #999; margin-top: 2px; }
+    .input-group { display: flex; gap: 12px; margin-top: 12px; }
+    .input-group input { flex: 1; padding: 12px 16px; border: 1.5px solid #E8E8E8; border-radius: 60px; font-size: 16px; }
+    .loading { text-align: center; padding: 40px; color: white; }
+    .error { background: #FFEBEE; color: #D32F2F; padding: 12px; border-radius: 12px; margin: 10px 0; text-align: center; }
+    .success { background: #E8F5E9; color: #2E7D32; padding: 12px; border-radius: 12px; margin: 10px 0; text-align: center; }
+    .hidden { display: none; }
+    .badge { background: #B8860B10; color: #B8860B; padding: 4px 12px; border-radius: 40px; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-cash-register"></i> Tijgerbol | Кассир</h1>
+    <p style="opacity: 0.7; margin-top: 8px;">Начисление и списание бонусов</p>
+  </div>
 
-// Эмуляция начисления/списания
-function emulateCreateClientAndAddPoints(phone, value, comment) {
-  if (!users[phone]) {
-    // Создаём нового клиента
-    users[phone] = { name: "Новый гость", bonus: 0, spent: 0, nickname: "Гость", avatar: "☕", visits: 0 };
+  <div class="card">
+    <h3 style="margin-bottom: 16px;"><i class="fas fa-search"></i> Поиск клиента</h3>
+    <div class="search-section">
+      <select id="country-select" style="width: 100px; padding: 14px 10px; border-radius: 60px; border: 1.5px solid #E8E8E8;">
+        <option value="+7">🇷🇺 +7</option>
+        <option value="+380">🇺🇦 +380</option>
+        <option value="+375">🇧🇾 +375</option>
+        <option value="+7">🇰🇿 +7</option>
+      </select>
+      <input type="tel" id="search-phone" placeholder="912 345 67 89">
+      <button onclick="searchClient()" style="width: auto; padding: 14px 24px;"><i class="fas fa-search"></i> Найти</button>
+    </div>
+    
+    <div id="client-info" class="hidden"></div>
+  </div>
+
+  <div id="actions-panel" class="hidden">
+    <div class="card">
+      <h3 style="margin-bottom: 16px;"><i class="fas fa-coffee"></i> Начисление бонусов</h3>
+      <p style="font-size: 13px; color: #666; margin-bottom: 12px;">5% бонусов от суммы чека (только кофе и фирменные напитки)</p>
+      <div class="row">
+        <button class="btn-success" onclick="showAmountPicker('coffee')"><i class="fas fa-coffee"></i> Кофе</button>
+        <button class="btn-success" onclick="showAmountPicker('bakery')"><i class="fas fa-croissant"></i> Фирменный</button>
+      </div>
+      <div id="amount-picker" class="hidden" style="margin-top: 16px;"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom: 16px;"><i class="fas fa-minus-circle"></i> Списание бонусов</h3>
+      <div class="row">
+        <button class="btn-secondary" onclick="redeemBonus(50)">Списать 50</button>
+        <button class="btn-secondary" onclick="redeemBonus(100)">Списать 100</button>
+      </div>
+      <div class="input-group">
+        <input type="number" id="custom-redeem" placeholder="Своя сумма">
+        <button class="btn-secondary" onclick="redeemBonus(parseInt(document.getElementById('custom-redeem').value) || 0)">Списать</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-panel" class="hidden card">
+    <h3 style="margin-bottom: 16px;"><i class="fas fa-clock"></i> История операций</h3>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<script>
+  // ========== SUPABASE НАСТРОЙКИ ==========
+  const SUPABASE_URL = 'https://iisgrrjkxryteofebutu.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlpc2dycmpreHJ5dGVvZmVidXR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MzM1MjMsImV4cCI6MjA5MTQwOTUyM30.RfdjJuUvpqY0ML0SKcxfZs4PyjUo0zm5oA0i6OntCvU';
+
+  let currentClient = null;
+  let currentPhone = '';
+
+  function normalizePhone(raw, countryCode) {
+    let digits = raw.replace(/\D/g, '');
+    if (countryCode === '+7' && digits.length === 10) return '+7' + digits;
+    if (countryCode === '+7' && digits.length === 11 && digits.startsWith('7')) return '+' + digits;
+    if (countryCode === '+7' && digits.length === 11 && digits.startsWith('8')) return '+7' + digits.substring(1);
+    if (countryCode === '+380' && digits.length === 9) return '+380' + digits;
+    if (countryCode === '+375' && digits.length === 9) return '+375' + digits;
+    if (digits.length >= 10) return countryCode + digits;
+    return raw;
   }
-  users[phone].bonus += value;
-  users[phone].spent += Math.abs(value) * 20; // грубая эмуляция
-  saveStorage();
-  return { success: true };
-}
+
+  async function callSupabase(endpoint, options = {}) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      ...options
+    });
+    return response;
+  }
+
+  async function searchClient() {
+    const countryCode = document.getElementById('country-select').value;
+    const rawNumber = document.getElementById('search-phone').value.trim();
+    if (!rawNumber) { alert('Введите номер телефона'); return; }
+    
+    const phone = normalizePhone(rawNumber, countryCode);
+    currentPhone = phone;
+    
+    try {
+      const response = await callSupabase(`users?phone=eq.${encodeURIComponent(phone)}&select=*`);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        currentClient = data[0];
+        showClientInfo();
+        loadTransactions();
+        document.getElementById('actions-panel').classList.remove('hidden');
+      } else {
+        document.getElementById('client-info').innerHTML = `<div class="error">❌ Клиент не найден. Предложите гостю зарегистрироваться в приложении.</div>`;
+        document.getElementById('client-info').classList.remove('hidden');
+        document.getElementById('actions-panel').classList.add('hidden');
+        document.getElementById('history-panel').classList.add('hidden');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ошибка при поиске клиента');
+    }
+  }
+
+  function showClientInfo() {
+    const level = currentClient.spent >= 10000 ? 'Платиновый' : currentClient.spent >= 5000 ? 'Золотой' : currentClient.spent >= 2000 ? 'Серебряный' : 'Бронзовый';
+    document.getElementById('client-info').innerHTML = `
+      <div class="client-info">
+        <div class="client-name">
+          <span style="font-size: 32px;">${currentClient.avatar || '☕'}</span>
+          ${currentClient.nickname || currentClient.name}
+          <span class="badge">${level}</span>
+        </div>
+        <div class="client-balance">${currentClient.bonus} бонусов</div>
+        <div class="stat-row"><span>📞 Телефон</span><strong>${currentClient.phone}</strong></div>
+        <div class="stat-row"><span>💰 Всего потрачено</span><strong>${currentClient.spent}₽</strong></div>
+        <div class="stat-row"><span>📅 Визитов</span><strong>${currentClient.visits || 1}</strong></div>
+      </div>
+    `;
+    document.getElementById('client-info').classList.remove('hidden');
+  }
+
+  async function loadTransactions() {
+    try {
+      const response = await callSupabase(`transactions?phone=eq.${encodeURIComponent(currentPhone)}&order=created_at.desc&limit=20`);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        let html = '';
+        data.forEach(t => {
+          const iconClass = t.type === 'add' ? 'add' : 'remove';
+          const iconSymbol = t.type === 'add' ? '+' : '−';
+          const date = new Date(t.created_at);
+          const dateStr = `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')} ${date.getDate()}.${date.getMonth()+1}`;
+          html += `
+            <div class="history-item">
+              <div class="history-icon ${iconClass}">${iconSymbol}</div>
+              <div class="history-text">
+                <div>${t.description}</div>
+                <div class="history-date">${dateStr}</div>
+              </div>
+            </div>
+          `;
+        });
+        document.getElementById('history-list').innerHTML = html;
+        document.getElementById('history-panel').classList.remove('hidden');
+      } else {
+        document.getElementById('history-list').innerHTML = '<p style="text-align:center; color:#999;">Нет операций</p>';
+        document.getElementById('history-panel').classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Error loading transactions:', error);
+    }
+  }
+
+  async function addBonusToClient(amount, bonusEarned, description) {
+    const newBonus = currentClient.bonus + bonusEarned;
+    const newSpent = currentClient.spent + amount;
+    
+    try {
+      // Обновляем баланс клиента
+      await callSupabase(`users?phone=eq.${encodeURIComponent(currentPhone)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ bonus: newBonus, spent: newSpent })
+      });
+      
+      // Добавляем транзакцию
+      await callSupabase('transactions', {
+        method: 'POST',
+        body: JSON.stringify({
+          phone: currentPhone,
+          amount: bonusEarned,
+          type: 'add',
+          description: description
+        })
+      });
+      
+      currentClient.bonus = newBonus;
+      currentClient.spent = newSpent;
+      showClientInfo();
+      loadTransactions();
+      
+      alert(`✅ Бонусы начислены! +${bonusEarned} бонусов`);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ошибка при начислении бонусов');
+    }
+  }
+
+  async function redeemBonusFromClient(bonusAmount) {
+    if (bonusAmount <= 0) return;
+    if (currentClient.bonus < bonusAmount) {
+      alert(`❌ Недостаточно бонусов! У клиента ${currentClient.bonus}, нужно ${bonusAmount}`);
+      return;
+    }
+    
+    const newBonus = currentClient.bonus - bonusAmount;
+    
+    try {
+      await callSupabase(`users?phone=eq.${encodeURIComponent(currentPhone)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ bonus: newBonus })
+      });
+      
+      await callSupabase('transactions', {
+        method: 'POST',
+        body: JSON.stringify({
+          phone: currentPhone,
+          amount: -bonusAmount,
+          type: 'remove',
+          description: `Списано ${bonusAmount} бонусов (кассир)`
+        })
+      });
+      
+      currentClient.bonus = newBonus;
+      showClientInfo();
+      loadTransactions();
+      
+      alert(`✅ Списано ${bonusAmount} бонусов`);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ошибка при списании бонусов');
+    }
+  }
+
+  function showAmountPicker(category) {
+    const categoryName = category === 'coffee' ? 'Кофе' : 'Фирменный напиток';
+    const icon = category === 'coffee' ? '☕' : '🥐';
+    const amounts = [200, 500, 1000, 1500];
+    const buttons = amounts.map(a => `<button class="btn-outline" onclick="addPurchase(${a}, '${category}')" style="background:transparent; border:1.5px solid #B8860B; color:#B8860B; margin:0 4px;">${a}₽</button>`).join('');
+    
+    document.getElementById('amount-picker').innerHTML = `
+      <div style="text-align:center;">
+        <p><strong>${icon} ${categoryName}</strong> — 5% бонусов</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:12px 0;">
+          ${buttons}
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <input type="number" id="custom-amount-${category}" placeholder="Своя сумма" style="flex:1; padding:12px; border-radius:60px; border:1.5px solid #E8E8E8;">
+          <button class="btn-success" onclick="addPurchase(parseInt(document.getElementById('custom-amount-${category}').value) || 0, '${category}')" style="width:auto;">Начислить</button>
+        </div>
+        <button class="btn-secondary" onclick="document.getElementById('amount-picker').classList.add('hidden')" style="margin-top:12px;">Закрыть</button>
+      </div>
+    `;
+    document.getElementById('amount-picker').classList.remove('hidden');
+  }
+
+  function addPurchase(amount, category) {
+    if (amount <= 0) return;
+    const bonusEarned = Math.floor(amount * 0.05);
+    const categoryName = category === 'coffee' ? 'Кофе' : 'Фирменный напиток';
+    const icon = category === 'coffee' ? '☕' : '🥐';
+    const description = `${icon} ${categoryName}: ${amount}₽ → +${bonusEarned} бонусов (5%)`;
+    
+    addBonusToClient(amount, bonusEarned, description);
+    document.getElementById('amount-picker').classList.add('hidden');
+  }
+
+  function redeemBonus(amount) {
+    redeemBonusFromClient(amount);
+    document.getElementById('custom-redeem').value = '';
+  }
+</script>
+</body>
+</html>
