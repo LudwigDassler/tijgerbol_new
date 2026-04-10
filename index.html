@@ -8,12 +8,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f0eb; margin: 0; padding: 0; }
     
-    /* Вкладки */
     .tabs { display: flex; background: #6D4C41; border-radius: 0; overflow: hidden; }
     .tab { flex: 1; text-align: center; padding: 16px; color: rgba(255,255,255,0.7); font-weight: 600; cursor: pointer; transition: 0.2s; }
     .tab.active { color: white; background: #8B5E4C; border-bottom: 3px solid #FFD700; }
     
-    /* Карточки */
     .container { padding: 16px; max-width: 500px; margin: 0 auto; }
     .card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
     .balance-card { background: linear-gradient(135deg, #6D4C41, #4E2E24); color: white; text-align: center; }
@@ -52,13 +50,14 @@
 </head>
 <body>
 
-<div class="tabs">
+<div class="tabs" id="tabs" style="display: none;">
   <div class="tab active" onclick="switchTab(0)">🛒 Покупка</div>
   <div class="tab" onclick="switchTab(1)">👤 Профиль</div>
   <div class="tab" onclick="switchTab(2)">📜 История</div>
 </div>
 
-<div id="tab-content" class="container"></div>
+<div id="login-screen" class="container"></div>
+<div id="app-screen" class="hidden"></div>
 
 <script>
   // ========== ДАННЫЕ ПОЛЬЗОВАТЕЛЕЙ ==========
@@ -76,7 +75,6 @@
   let transactions = [];
   let currentTab = 0;
   
-  // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
   function formatDate() {
     let d = new Date();
     return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} ${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()}`;
@@ -112,8 +110,8 @@
     if (transactions.length > 50) transactions.pop();
   }
   
-  // ========== ОСНОВНЫЕ ДЕЙСТВИЯ ==========
   function addPurchase(amount) {
+    if (amount <= 0) return;
     let bonusEarned = Math.floor(amount * 0.05);
     currentBonus += bonusEarned;
     currentSpent += amount;
@@ -140,11 +138,9 @@
     renderCurrentTab();
   }
   
-  // ========== ВХОД ==========
   function login() {
     let phone = document.getElementById('phone-input').value.trim();
     if (!phone) { alert('Введите номер телефона'); return; }
-    
     if (!phone.startsWith('+7') || phone.length !== 12) {
       alert('Используйте формат +7XXXXXXXXXX');
       return;
@@ -172,17 +168,19 @@
     
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app-screen').classList.remove('hidden');
+    document.getElementById('tabs').style.display = 'flex';
     renderCurrentTab();
   }
   
   function logout() {
     document.getElementById('login-screen').classList.remove('hidden');
     document.getElementById('app-screen').classList.add('hidden');
+    document.getElementById('tabs').style.display = 'none';
     currentUser = null;
     currentPhone = '';
+    renderLoginScreen();
   }
   
-  // ========== ОТРИСОВКА ВКЛАДОК ==========
   function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.tab').forEach((el, i) => {
@@ -233,7 +231,7 @@
       
       <div class="info-text">☕ 5% бонусов начисляется на кофе и фирменные напитки</div>
     `;
-    document.getElementById('tab-content').innerHTML = html;
+    document.getElementById('app-screen').innerHTML = `<div class="container" id="tab-content">${html}</div>`;
   }
   
   function renderProfileTab() {
@@ -243,39 +241,41 @@
     ).join('');
     
     let html = `
-      <div class="card" style="text-align: center;">
-        <div class="avatar-large">${currentAvatar}</div>
-        <h2>${currentNickname}</h2>
-        <p style="color: #888; font-size: 13px;">${currentPhone}</p>
-        <div style="display: inline-block; background: ${getLevelColor()}20; padding: 4px 12px; border-radius: 20px; margin-top: 8px;">
-          <span style="color: ${getLevelColor()};">${getLevel()}</span>
+      <div class="container">
+        <div class="card" style="text-align: center;">
+          <div class="avatar-large">${currentAvatar}</div>
+          <h2>${currentNickname}</h2>
+          <p style="color: #888; font-size: 13px;">${currentPhone}</p>
+          <div style="display: inline-block; background: ${getLevelColor()}20; padding: 4px 12px; border-radius: 20px; margin-top: 8px;">
+            <span style="color: ${getLevelColor()};">${getLevel()}</span>
+          </div>
+        </div>
+        
+        <div class="card">
+          <h3>✏️ Редактировать профиль</h3>
+          <input type="text" id="nickname-input" placeholder="Никнейм" value="${currentNickname}">
+          <div class="avatar-selector">${avatarsHtml}</div>
+          <button onclick="saveProfile()">Сохранить изменения</button>
+        </div>
+        
+        <div class="card">
+          <h3>📊 Статистика</h3>
+          <div class="stat-row"><span>🏆 Всего бонусов</span><strong>${currentBonus}</strong></div>
+          <div class="stat-row"><span>💰 Всего потрачено</span><strong>${currentSpent}₽</strong></div>
+          <div class="stat-row"><span>⭐ Уровень</span><strong>${getLevel()}</strong></div>
         </div>
       </div>
-      
-      <div class="card">
-        <h3>✏️ Редактировать профиль</h3>
-        <input type="text" id="nickname-input" placeholder="Никнейм" value="${currentNickname}">
-        <div class="avatar-selector">${avatarsHtml}</div>
-        <button onclick="saveProfile()">Сохранить изменения</button>
-      </div>
-      
-      <div class="card">
-        <h3>📊 Статистика</h3>
-        <div class="stat-row"><span>🏆 Всего бонусов</span><strong>${currentBonus}</strong></div>
-        <div class="stat-row"><span>💰 Всего потрачено</span><strong>${currentSpent}₽</strong></div>
-        <div class="stat-row"><span>⭐ Уровень</span><strong>${getLevel()}</strong></div>
-      </div>
     `;
-    document.getElementById('tab-content').innerHTML = html;
+    document.getElementById('app-screen').innerHTML = html;
   }
   
   function renderHistoryTab() {
     if (transactions.length === 0) {
-      document.getElementById('tab-content').innerHTML = `<div class="card" style="text-align: center;">📭 Нет операций</div>`;
+      document.getElementById('app-screen').innerHTML = `<div class="container"><div class="card" style="text-align: center;">📭 Нет операций</div></div>`;
       return;
     }
     
-    let historyHtml = '<div class="card">';
+    let historyHtml = '<div class="container"><div class="card">';
     transactions.forEach(t => {
       let iconClass = t.type === 'add' ? 'add' : 'remove';
       let iconSymbol = t.type === 'add' ? '+' : '−';
@@ -289,8 +289,8 @@
         </div>
       `;
     });
-    historyHtml += '</div>';
-    document.getElementById('tab-content').innerHTML = historyHtml;
+    historyHtml += '</div></div>';
+    document.getElementById('app-screen').innerHTML = historyHtml;
   }
   
   function selectAvatar(avatar) {
@@ -305,8 +305,7 @@
     renderProfileTab();
   }
   
-  // ========== ИНИЦИАЛИЗАЦИЯ ==========
-  function init() {
+  function renderLoginScreen() {
     let loginHtml = `
       <div class="card" style="text-align: center; margin-top: 40px;">
         <div style="font-size: 64px;">☕</div>
@@ -318,14 +317,9 @@
       </div>
     `;
     document.getElementById('login-screen').innerHTML = loginHtml;
-    document.getElementById('app-screen').innerHTML = '<div id="tab-content" class="container"></div>';
   }
   
-  init();
+  renderLoginScreen();
 </script>
-
-<div id="login-screen"></div>
-<div id="app-screen" class="hidden"></div>
-
 </body>
 </html>
