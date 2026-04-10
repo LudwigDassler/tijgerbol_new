@@ -3,33 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tijgerbol</title>
+  <title>Tijgerbol - Бонусная программа</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; background: #f5f5f5; margin: 0; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 20px; background: #f0f0f0; margin: 0; }
     .coffee { font-size: 64px; }
-    h1 { color: #6D4C41; }
-    button { background: #6D4C41; color: white; border: none; padding: 12px 24px; border-radius: 8px; margin: 8px; cursor: pointer; font-size: 14px; }
-    input { padding: 12px; margin: 10px; border-radius: 8px; border: 1px solid #ccc; width: 200px; font-size: 16px; }
-    .card { background: white; padding: 20px; border-radius: 16px; max-width: 350px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .bonus { font-size: 36px; font-weight: bold; color: #6D4C41; }
-    button:active { transform: scale(0.98); }
-    .history-item { border-bottom: 1px solid #eee; padding: 8px 0; text-align: left; }
-    .green { color: green; }
-    .red { color: red; }
+    h1 { color: #6D4C41; margin: 10px 0; }
+    .sub { color: #666; margin-bottom: 30px; }
+    button { background: #6D4C41; color: white; border: none; padding: 12px 20px; border-radius: 30px; margin: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
+    button:active { transform: scale(0.97); }
+    input { padding: 12px; border-radius: 30px; border: 1px solid #ccc; width: 220px; font-size: 16px; text-align: center; }
+    .card { background: white; padding: 20px; border-radius: 24px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .bonus { font-size: 44px; font-weight: bold; color: #6D4C41; margin: 10px 0; }
+    .spent { color: #888; font-size: 14px; }
+    hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
+    .history-item { border-bottom: 1px solid #eee; padding: 10px 0; text-align: left; font-size: 14px; }
+    .green { color: #2e7d32; font-weight: 500; }
+    .red { color: #c62828; font-weight: 500; }
+    .section-title { font-size: 16px; font-weight: bold; margin: 15px 0 5px; color: #333; }
+    .btn-outline { background: #efebe9; color: #6D4C41; }
+    .btn-danger { background: #d32f2f; }
   </style>
 </head>
 <body>
   <div class="coffee">☕</div>
   <h1>Tijgerbol</h1>
-  <p style="color: #666;">Бонусная программа кофейни</p>
+  <p class="sub">Бонусная программа кофейни</p>
   
   <div class="card">
     <input type="tel" id="phone" placeholder="+7 912 345 67 89">
-    <br>
-    <button onclick="login()">Войти / Зарегистрироваться</button>
+    <br><br>
+    <button onclick="login()">🔑 Войти / Зарегистрироваться</button>
   </div>
   
-  <div id="app" style="margin-top: 20px;"></div>
+  <div id="app"></div>
 
   <script>
     let currentUser = null;
@@ -45,6 +52,7 @@
     
     function login() {
       let phone = document.getElementById('phone').value.trim();
+      if (!phone) { alert('Введите номер телефона'); return; }
       currentPhone = phone;
       
       if (users[phone]) {
@@ -66,84 +74,78 @@
     
     function showApp() {
       document.getElementById('app').innerHTML = `
-        <div class="card">
-          <div style="font-size: 48px;">${currentUser.avatar}</div>
-          <h2>${currentUser.name}</h2>
-          <p>Номер: ${currentPhone}</p>
-          <div class="bonus">${currentBonus} бонусов</div>
-          <p>Потрачено: ${currentSpent}₽</p>
+        <div class="card" style="margin-top: 20px;">
+          <div style="font-size: 56px;">${currentUser.avatar}</div>
+          <h2 style="margin: 5px 0;">${currentUser.name}</h2>
+          <p style="color: #888; font-size: 12px;">${currentPhone}</p>
+          <div class="bonus">${currentBonus} <span style="font-size: 16px;">бонусов</span></div>
+          <div class="spent">💰 Всего потрачено: ${currentSpent}₽</div>
+          
           <hr>
-          <h3>☕ Покупка напитка</h3>
-          <button onclick="addPurchase(200)">200₽ (+10 бонусов)</button>
-          <button onclick="addPurchase(500)">500₽ (+25 бонусов)</button>
-          <button onclick="addPurchase(1000)">1000₽ (+50 бонусов)</button>
+          
+          <div class="section-title">☕ Новая покупка (5% бонусами)</div>
+          <button onclick="addPurchase(200)">200₽ → +10 бонусов</button>
+          <button onclick="addPurchase(500)">500₽ → +25 бонусов</button>
+          <button onclick="addPurchase(1000)">1000₽ → +50 бонусов</button>
+          
           <hr>
-          <h3>🎁 Списание бонусов</h3>
-          <button onclick="redeemBonus(50)">Списать 50</button>
-          <button onclick="redeemBonus(100)">Списать 100</button>
+          
+          <div class="section-title">🎁 Списание бонусов</div>
+          <button onclick="redeemBonus(50)" class="btn-outline">Списать 50</button>
+          <button onclick="redeemBonus(100)" class="btn-outline">Списать 100</button>
+          
           <hr>
-          <button onclick="logout()" style="background: #999;">🚪 Выйти</button>
+          
+          <button onclick="logout()" class="btn-danger">🚪 Выйти</button>
         </div>
-        <div id="history" style="margin-top: 20px; max-width: 350px; margin: 20px auto;"></div>
+        <div id="history" style="margin-top: 20px;"></div>
       `;
-      showHistory();
+      renderHistory();
     }
     
     function addPurchase(amount) {
       let bonusEarned = Math.floor(amount * 0.05);
       currentBonus += bonusEarned;
       currentSpent += amount;
-      history.unshift({
-        text: `☕ Покупка на ${amount}₽ → +${bonusEarned} бонусов`,
-        type: 'add'
-      });
+      history.unshift({ text: `☕ Покупка на ${amount}₽ → +${bonusEarned} бонусов`, type: 'add' });
       updateUI();
-      saveToStorage();
+      saveUser();
     }
     
     function redeemBonus(amount) {
       if (currentBonus >= amount) {
         currentBonus -= amount;
-        history.unshift({
-          text: `🎁 Списано ${amount} бонусов`,
-          type: 'remove'
-        });
+        history.unshift({ text: `🎁 Списано ${amount} бонусов`, type: 'remove' });
         updateUI();
-        saveToStorage();
+        saveUser();
       } else {
-        alert(`❌ Недостаточно бонусов! У вас ${currentBonus}, а нужно ${amount}`);
+        alert(`❌ Недостаточно бонусов! У вас ${currentBonus}, нужно ${amount}`);
       }
     }
     
     function updateUI() {
-      document.querySelector('.bonus').innerHTML = `${currentBonus} бонусов`;
-      document.querySelector('p:nth-of-type(2)').innerHTML = `Потрачено: ${currentSpent}₽`;
-      showHistory();
+      document.querySelector('.bonus').innerHTML = `${currentBonus} <span style="font-size: 16px;">бонусов</span>`;
+      document.querySelector('.spent').innerHTML = `💰 Всего потрачено: ${currentSpent}₽`;
+      renderHistory();
     }
     
-    function showHistory() {
-      let historyHtml = '<div class="card"><h3>📜 История операций</h3>';
+    function renderHistory() {
+      let historyHtml = '<div class="card"><div class="section-title">📜 История операций</div>';
       if (history.length === 0) {
-        historyHtml += '<p>Нет операций</p>';
+        historyHtml += '<p style="color:#888;">Нет операций</p>';
       } else {
         history.forEach(item => {
-          let colorClass = item.type === 'add' ? 'green' : 'red';
-          historyHtml += `<div class="history-item"><span class="${colorClass}">${item.text}</span></div>`;
+          let cls = item.type === 'add' ? 'green' : 'red';
+          historyHtml += `<div class="history-item"><span class="${cls}">${item.text}</span></div>`;
         });
       }
       historyHtml += '</div>';
       document.getElementById('history').innerHTML = historyHtml;
     }
     
-    function saveToStorage() {
-      // Сохраняем в localStorage для нового пользователя
+    function saveUser() {
       if (!users[currentPhone]) {
-        users[currentPhone] = {
-          name: currentUser.name,
-          bonus: currentBonus,
-          avatar: currentUser.avatar,
-          spent: currentSpent
-        };
+        users[currentPhone] = { name: currentUser.name, bonus: currentBonus, avatar: currentUser.avatar, spent: currentSpent };
       } else {
         users[currentPhone].bonus = currentBonus;
         users[currentPhone].spent = currentSpent;
@@ -152,7 +154,6 @@
     
     function logout() {
       currentUser = null;
-      history = [];
       document.getElementById('app').innerHTML = '';
       document.getElementById('phone').value = '';
       location.reload();
